@@ -1,0 +1,77 @@
+<!--SIDENAV LATERAL-->
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
+    <md-toolbar md-colors="{background: 'blue-grey'}">
+        <h1 class="md-toolbar-tools">Previsão do Tempo</h1>
+    </md-toolbar>
+    <md-content layout-padding>
+        <md-input-container class="md-block">
+            <label>Cidade</label>
+            <input ng-model="city" ng-keypress="($event.charCode == 13) ? buscaPrevisoes() : return">
+        </md-input-container>
+        <md-radio-group ng-model="escala">
+            <md-radio-button value="metric" class="md-primary">Célsius</md-radio-button>
+            <md-radio-button value="Imperial"> Fahrenheit </md-radio-button>
+        </md-radio-group>
+        <md-button class="md-raised black md-button" md-colors="{background: 'blue-grey'}" ng-click="buscaPrevisoes()">Buscar</md-button>
+    </md-content>
+</md-sidenav>
+<!--PAGINA QUE E APRESENTADA AO ENTRAR NO APP-->
+<div ng-if="!exibir">
+    <div id="background">
+        <video autoplay="" loop="" muted="" poster="assets/img/cloud.jpg">
+            <source src="assets/video/clouds.mp4" type="video/mp4">
+        </video>
+        <div class="fill"></div>
+    </div>
+    <div class="intro">
+        <h1><i class="fa fa-code fa-lg"></i></h1>
+        <h1>Eu sou Lucas Agliardi,</h1>
+        <p class="who-creates">Desenvolvedor Front-End de Canoas-RS.</p>
+        <p class="who-creates"> Esse é meu aplicativo de previsão do tempo, espero que goste (:</p>
+        <md-button ng-click="toggleRight()" ng-hide="isOpenRight()" class="button-intro">
+            Iniciar Aplicativo
+        </md-button>
+    </div>
+</div>
+<!--RESULTADO DA PREVISÃO DO TEMPO-->
+<div ng-if="exibir">
+    <md-toolbar md-scroll-shrink md-colors="{background: 'blue-grey'}">
+        <div class="md-toolbar-tools">
+            {{cidade}} - {{dataAtual | date :'dd/MM/yyyy h:mm a'}} - {{$root.tempAtual}}º
+            <md-button aria-label="menu" ng-click="toggleRight()" class="md-fab md-button-menu">
+                <img src="assets/img/menu.svg" aria-label="menu" />
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-content class="md-padding" layout-xs="column" layout="row">
+        <div flex-xs flex-gt-xs="20" layout="column" ng-repeat="previsaoHoje in previsoesHoje">
+            <md-card md-theme="{{ showDarkTheme ? 'dark-purple' : 'default' }}" md-theme-watch>
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">
+							{{previsaoHoje.dt_txt |date:'shortTime'}}</span>
+                        <span class="md-subhead">Temperatura: {{previsaoHoje.main.temp}}º</span>
+                    </md-card-title-text>
+                    <md-card-title-media>
+                        <div class="md-media-sm card-media">
+                            <img ng-src="http://openweathermap.org/img/w/{{previsaoHoje.weather[0].icon}}.png" class="md-avatar" alt="{{previsao.weather[0].main}}">
+                        </div>
+                    </md-card-title-media>
+                </md-card-title>
+            </md-card>
+        </div>
+    </md-content>
+    <md-content class="md-margin-top">
+        <md-list>
+            <md-list-item class="md-3-line" ng-repeat="previsao in previsoes">
+                <img ng-src="http://openweathermap.org/img/w/{{previsao.weather[0].icon}}.png" class="md-avatar" alt="{{previsao.weather[0].main}}">
+                <div class="md-list-item-text">
+                    <h3>{{previsao.dt |date:'fullDate'}}</h3>
+                    <h4>{{previsao.weather[0].description}}</h4>
+                    <p>Minima: {{previsao.temp.min}}º Maxima: {{previsao.temp.max}}º</p>
+                </div>
+                <md-divider md-inset ng-if="!$last"></md-divider>
+            </md-list-item>
+        </md-list>
+    </md-content>
+</div>
